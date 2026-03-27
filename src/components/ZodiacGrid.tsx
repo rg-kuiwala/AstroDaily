@@ -16,25 +16,40 @@ export const ZodiacGrid: React.FC<ZodiacGridProps> = ({
   selectedSign,
 }) => {
   return (
-    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 p-4">
+    <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6 p-4 max-w-6xl mx-auto">
       {ZODIAC_SIGNS.map((sign, index) => (
         <motion.button
           key={sign.id}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.05 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ y: -8, scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ 
+            type: "spring",
+            stiffness: 300,
+            damping: 20,
+            delay: index * 0.03 
+          }}
           onClick={() => onSelect(sign.id)}
           className={cn(
-            "glass zodiac-card p-4 flex flex-col items-center justify-center gap-2",
-            selectedSign === sign.id && "border-gold bg-white/20"
+            "glass-dark zodiac-card p-6 flex flex-col items-center justify-center gap-4 group",
+            selectedSign === sign.id ? "border-gold bg-gold/10 ring-2 ring-gold/20" : "hover:border-white/20"
           )}
         >
-          <span className="text-4xl gold-text">{sign.symbol}</span>
-          <div className="text-center">
-            <p className="font-bold text-sm md:text-base">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gold/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+            <span className="text-5xl gold-text relative z-10 block transform group-hover:rotate-12 transition-transform duration-500">
+              {sign.symbol}
+            </span>
+          </div>
+          
+          <div className="text-center space-y-1">
+            <p className="font-serif font-bold text-sm md:text-base tracking-wide gold-text">
               {language === "en" ? sign.id : sign.hindiName}
             </p>
-            <p className="text-[10px] md:text-xs opacity-60">{sign.dateRange}</p>
+            <p className="text-[9px] md:text-[10px] opacity-40 uppercase tracking-widest font-medium">
+              {sign.dateRange}
+            </p>
           </div>
         </motion.button>
       ))}

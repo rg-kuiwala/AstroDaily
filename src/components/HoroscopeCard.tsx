@@ -16,12 +16,16 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="glass p-8 w-full max-w-2xl mx-auto animate-pulse">
-        <div className="h-8 bg-white/10 rounded w-1/3 mb-6 mx-auto"></div>
+      <div className="glass-dark p-12 w-full max-w-3xl mx-auto animate-pulse space-y-8">
+        <div className="h-12 bg-white/5 rounded-2xl w-1/2 mx-auto"></div>
         <div className="space-y-4">
-          <div className="h-4 bg-white/10 rounded w-full"></div>
-          <div className="h-4 bg-white/10 rounded w-full"></div>
-          <div className="h-4 bg-white/10 rounded w-2/3"></div>
+          <div className="h-4 bg-white/5 rounded-full w-full"></div>
+          <div className="h-4 bg-white/5 rounded-full w-full"></div>
+          <div className="h-4 bg-white/5 rounded-full w-3/4"></div>
+        </div>
+        <div className="grid grid-cols-2 gap-6">
+          <div className="h-16 bg-white/5 rounded-2xl"></div>
+          <div className="h-16 bg-white/5 rounded-2xl"></div>
         </div>
       </div>
     );
@@ -33,14 +37,14 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
       luckyColor: "Lucky Color",
       compatibility: "Compatibility",
       mood: "Mood",
-      prediction: "Your Horoscope",
+      prediction: "Celestial Guidance",
     },
     hi: {
       luckyNumber: "भाग्यशाली अंक",
       luckyColor: "भाग्यशाली रंग",
       compatibility: "अनुकूलता",
       mood: "मनोदशा",
-      prediction: "आपका राशिफल",
+      prediction: "दिव्य मार्गदर्शन",
     },
   };
 
@@ -48,69 +52,64 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="glass p-8 w-full max-w-2xl mx-auto relative overflow-hidden"
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="glass-dark p-10 md:p-14 w-full max-w-3xl mx-auto relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
     >
-      <div className="absolute top-0 right-0 p-4 opacity-10">
-        <Sparkles size={120} />
-      </div>
+      <div className="absolute -top-24 -right-24 w-64 h-64 bg-gold/5 rounded-full blur-3xl" />
+      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
 
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-serif gold-text mb-2">
-          {data.sign} - {data.date}
+      <div className="text-center mb-12 relative">
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="inline-block p-4 bg-gold/10 rounded-full mb-6 border border-gold/20"
+        >
+          <Sparkles size={32} className="text-gold" />
+        </motion.div>
+        <h2 className="text-4xl md:text-5xl font-serif gold-text mb-4 tracking-tight">
+          {data.sign}
         </h2>
-        <div className="h-px bg-gradient-to-r from-transparent via-gold/50 to-transparent w-full"></div>
+        <p className="text-xs text-white/40 uppercase tracking-[0.4em] font-medium">
+          {data.date}
+        </p>
+        <div className="mt-8 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent w-full"></div>
       </div>
 
-      <div className="mb-8">
-        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
-          <Moon size={20} className="text-gold" />
-          {l.prediction}
-        </h3>
-        <p className="text-lg leading-relaxed opacity-90">{data.prediction}</p>
+      <div className="mb-14 relative">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-8 h-px bg-gold/50"></div>
+          <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-gold/80">
+            {l.prediction}
+          </h3>
+        </div>
+        <p className="text-xl md:text-2xl leading-relaxed font-serif italic text-white/90">
+          "{data.prediction}"
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 gap-6">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-white/5 rounded-lg">
-            <Hash size={20} className="text-gold" />
-          </div>
-          <div>
-            <p className="text-xs opacity-60">{l.luckyNumber}</p>
-            <p className="font-bold">{data.luckyNumber}</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-white/5 rounded-lg">
-            <Palette size={20} className="text-gold" />
-          </div>
-          <div>
-            <p className="text-xs opacity-60">{l.luckyColor}</p>
-            <p className="font-bold">{data.luckyColor}</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-white/5 rounded-lg">
-            <Heart size={20} className="text-gold" />
-          </div>
-          <div>
-            <p className="text-xs opacity-60">{l.compatibility}</p>
-            <p className="font-bold">{data.compatibility}</p>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-white/5 rounded-lg">
-            <Sparkles size={20} className="text-gold" />
-          </div>
-          <div>
-            <p className="text-xs opacity-60">{l.mood}</p>
-            <p className="font-bold">{data.mood}</p>
-          </div>
-        </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+        {[
+          { icon: Hash, label: l.luckyNumber, value: data.luckyNumber },
+          { icon: Palette, label: l.luckyColor, value: data.luckyColor },
+          { icon: Heart, label: l.compatibility, value: data.compatibility },
+          { icon: Sparkles, label: l.mood, value: data.mood },
+        ].map((item, i) => (
+          <motion.div 
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4 + i * 0.1 }}
+            className="p-5 glass border-white/5 flex flex-col items-center gap-3 text-center group hover:bg-white/5 transition-colors"
+          >
+            <item.icon size={20} className="text-gold opacity-60 group-hover:opacity-100 transition-opacity" />
+            <div>
+              <p className="text-[10px] opacity-40 uppercase tracking-widest mb-1">{item.label}</p>
+              <p className="font-bold text-sm tracking-wide">{item.value}</p>
+            </div>
+          </motion.div>
+        ))}
       </div>
     </motion.div>
   );

@@ -146,79 +146,96 @@ export default function App() {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-8">
         <StarfieldBackground />
-        <div className="p-4 bg-gold rounded-xl text-mystic-900 animate-pulse">
-          <Moon size={32} />
-        </div>
+        <div className="atmosphere" />
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="p-6 bg-gold rounded-3xl text-mystic-900 shadow-[0_0_30px_rgba(212,175,55,0.3)]"
+        >
+          <Moon size={48} className="animate-pulse" />
+        </motion.div>
         <div className="flex flex-col items-center gap-4">
-          <p className="text-white/40 text-xs uppercase tracking-widest animate-pulse">
-            Connecting to the cosmos...
+          <p className="text-white/60 text-sm font-medium tracking-[0.2em] uppercase animate-pulse">
+            Reading the Stars
           </p>
-          <button
-            onClick={() => setIsAuthReady(true)}
-            className="px-6 py-2 glass rounded-full text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-all"
-          >
-            Force Load App
-          </button>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col relative">
+    <div className="min-h-screen flex flex-col relative selection:bg-gold/30">
       <StarfieldBackground />
+      <div className="atmosphere" />
       
       {/* Header */}
-      <header className="p-6 flex items-center justify-between max-w-7xl mx-auto w-full">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-gold rounded-xl text-mystic-900">
-            <Moon size={24} />
+      <header className="p-8 flex items-center justify-between max-w-7xl mx-auto w-full">
+        <motion.div 
+          initial={{ x: -20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          className="flex items-center gap-4 group cursor-pointer"
+        >
+          <div className="p-3 bg-gold rounded-2xl text-mystic-900 shadow-lg group-hover:rotate-12 transition-transform duration-500">
+            <Moon size={28} />
           </div>
           <div>
-            <h1 className="text-2xl font-serif font-bold tracking-tight gold-text">
+            <h1 className="text-3xl font-serif font-bold tracking-tight gold-text">
               {l.title}
             </h1>
-            <p className="text-xs opacity-60 uppercase tracking-widest">
-              {l.subtitle}
+            <p className="text-[10px] text-white/40 uppercase tracking-[0.3em] font-medium">
+              Celestial Insights
             </p>
           </div>
-        </div>
+        </motion.div>
 
         <div className="flex items-center gap-4">
           <LanguageToggle language={language} onToggle={setLanguage} />
-          {user && (
+          {user ? (
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setView("profile")}
+                className={`p-3 glass rounded-2xl transition-all ${view === 'profile' ? 'bg-gold text-mystic-900' : 'hover:bg-white/10 text-white/60'}`}
+                title={l.profile}
+              >
+                <UserIcon size={20} />
+              </button>
+              <button
+                onClick={handleLogout}
+                className="p-3 glass rounded-2xl hover:bg-red-500/20 transition-all text-red-400"
+                title={l.logout}
+              >
+                <LogOut size={20} />
+              </button>
+            </div>
+          ) : (
             <button
-              onClick={handleLogout}
-              className="p-2 glass rounded-full hover:bg-white/10 transition-all text-white/60 hover:text-white"
-              title={l.logout}
+              onClick={() => setView("chat")}
+              className="px-8 py-3 bg-gold text-mystic-900 font-bold rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(212,175,55,0.2)] text-sm"
             >
-              <LogOut size={20} />
+              {l.personalized}
             </button>
           )}
-          <button className="p-2 glass rounded-full hover:bg-white/10 transition-all">
-            <Bell size={20} />
-          </button>
         </div>
       </header>
 
       {/* Navigation Tabs */}
-      <div className="max-w-7xl mx-auto w-full px-6 mb-8">
-        <div className="flex glass p-1 rounded-full w-fit">
+      <div className="max-w-7xl mx-auto w-full px-8 mb-12">
+        <div className="flex glass p-1.5 rounded-3xl w-fit shadow-xl">
           <button
             onClick={() => setView("horoscope")}
-            className={`px-6 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
-              view === "horoscope" ? "bg-gold text-mystic-900" : "opacity-60 hover:opacity-100"
+            className={`px-8 py-3 rounded-2xl text-sm font-semibold tracking-wide transition-all flex items-center gap-3 ${
+              view === "horoscope" ? "bg-gold text-mystic-900 shadow-lg" : "text-white/40 hover:text-white hover:bg-white/5"
             }`}
           >
-            <Compass size={16} /> {l.general}
+            <Compass size={18} /> {l.general}
           </button>
           <button
             onClick={() => setView(user ? (userProfile ? "chat" : "profile") : "chat")}
-            className={`px-6 py-2 rounded-full text-sm font-medium transition-all flex items-center gap-2 ${
-              view === "chat" || view === "profile" ? "bg-gold text-mystic-900" : "opacity-60 hover:opacity-100"
+            className={`px-8 py-3 rounded-2xl text-sm font-semibold tracking-wide transition-all flex items-center gap-3 ${
+              view === "chat" || view === "profile" ? "bg-gold text-mystic-900 shadow-lg" : "text-white/40 hover:text-white hover:bg-white/5"
             }`}
           >
-            <Sparkles size={16} /> {l.personalized}
+            <Sparkles size={18} /> {l.personalized}
           </button>
         </div>
       </div>

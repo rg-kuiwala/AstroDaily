@@ -28,23 +28,19 @@ export const Auth: React.FC<AuthProps> = ({ language }) => {
       console.error("Login failed:", err);
       setShowRedirectOption(true);
       
-      // Handle specific Firebase Auth errors
+      // User-friendly error messages
       if (err.code === "auth/popup-blocked") {
         setError(language === "en" 
-          ? "Popup blocked! Please allow popups or use the redirect method below." 
-          : "पॉपअप ब्लॉक हो गया! कृपया पॉपअप की अनुमति दें या नीचे दिए गए रीडायरेक्ट तरीके का उपयोग करें।");
+          ? "The login window was blocked. Please allow popups or use the method below." 
+          : "लॉगिन विंडो ब्लॉक कर दी गई थी। कृपया पॉपअप की अनुमति दें या नीचे दी गई विधि का उपयोग करें।");
       } else if (err.code === "auth/unauthorized-domain") {
         setError(language === "en"
-          ? "Unauthorized domain! Please add this URL to your Firebase Console 'Authorized Domains' list."
-          : "अनधिकृत डोमेन! कृपया इस यूआरएल को अपने फायरबेस कंसोल 'अधिकृत डोमेन' सूची में जोड़ें।");
-      } else if (err.code === "auth/cancelled-popup-request") {
-        setError(language === "en" 
-          ? "Login was cancelled. Please try again." 
-          : "लॉगिन रद्द कर दिया गया था। कृपया पुनः प्रयास करें।");
+          ? "This domain is not yet authorized in Firebase. Please check your settings."
+          : "यह डोमेन अभी तक फायरबेस में अधिकृत नहीं है। कृपया अपनी सेटिंग्स जांचें।");
       } else {
         setError(language === "en" 
-          ? `Sign in failed (${err.code || "unknown error"}). Please check your connection.` 
-          : `साइन इन विफल रहा (${err.code || "अज्ञात त्रुटि"})। कृपया अपना कनेक्शन जांचें।`);
+          ? "Something went wrong during sign in. Please try again." 
+          : "साइन इन के दौरान कुछ गलत हो गया। कृपया पुनः प्रयास करें।");
       }
     } finally {
       setLoading(false);
@@ -68,42 +64,48 @@ export const Auth: React.FC<AuthProps> = ({ language }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="glass p-12 max-w-md mx-auto text-center space-y-8"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="glass p-12 max-w-md mx-auto text-center space-y-10 relative overflow-hidden"
     >
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-50" />
+      
       <div className="flex justify-center">
-        <div className="p-4 bg-gold/20 rounded-full">
-          <Sparkles size={48} className="text-gold" />
-        </div>
+        <motion.div 
+          animate={{ rotate: [0, 10, -10, 0] }}
+          transition={{ duration: 5, repeat: Infinity }}
+          className="p-5 bg-gold/10 rounded-3xl border border-gold/20 shadow-[0_0_40px_rgba(212,175,55,0.1)]"
+        >
+          <Sparkles size={56} className="text-gold" />
+        </motion.div>
       </div>
       
-      <div className="space-y-2">
-        <h2 className="text-3xl font-serif gold-text">{l.title}</h2>
-        <p className="text-sm opacity-60 leading-relaxed">{l.subtitle}</p>
+      <div className="space-y-3">
+        <h2 className="text-4xl font-serif font-bold gold-text leading-tight">{l.title}</h2>
+        <p className="text-sm text-white/50 leading-relaxed px-4">{l.subtitle}</p>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-6">
         <button
           onClick={() => handleLogin(false)}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-3 bg-white text-mystic-900 font-bold py-4 rounded-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+          className="w-full flex items-center justify-center gap-4 bg-white text-mystic-950 font-bold py-5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 shadow-[0_10px_30px_rgba(255,255,255,0.1)] group"
         >
           {loading ? (
-            <Loader2 size={20} className="animate-spin" />
+            <Loader2 size={22} className="animate-spin" />
           ) : (
-            <LogIn size={20} />
+            <LogIn size={22} className="group-hover:translate-x-1 transition-transform" />
           )}
-          {l.button}
+          <span className="text-lg">{l.button}</span>
         </button>
 
         {showRedirectOption && (
           <button
             onClick={() => handleLogin(true)}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 text-white/60 hover:text-white text-xs py-2 transition-all"
+            className="w-full flex items-center justify-center gap-2 text-white/40 hover:text-white text-xs font-medium py-2 transition-all uppercase tracking-widest"
           >
-            {language === "en" ? "Try Redirect Method (Better for Mobile)" : "रीडायरेक्ट विधि आज़माएं (मोबाइल के लिए बेहतर)"}
+            {language === "en" ? "Try Direct Method" : "सीधी विधि आज़माएं"}
             <ArrowRight size={14} />
           </button>
         )}
