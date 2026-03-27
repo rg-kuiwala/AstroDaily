@@ -12,15 +12,25 @@ import {
 import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "firebase/firestore";
 import firebaseConfig from "../firebase-applet-config.json";
 
+console.log("Initializing Firebase with project:", firebaseConfig.projectId);
+
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
 // Set persistence to session to avoid some iframe issues with local storage
-setPersistence(auth, browserSessionPersistence).catch(err => {
-  console.error("Failed to set auth persistence:", err);
-});
+// We use a try-catch to ensure this doesn't block the app if it fails
+try {
+  setPersistence(auth, browserSessionPersistence).catch(err => {
+    console.error("Failed to set auth persistence:", err);
+  });
+} catch (e) {
+  console.error("Persistence error:", e);
+}
 
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+// Ensure firestoreDatabaseId is handled correctly
+export const db = firebaseConfig.firestoreDatabaseId && firebaseConfig.firestoreDatabaseId !== "(default)"
+  ? getFirestore(app, firebaseConfig.firestoreDatabaseId)
+  : getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 
 export { signInWithPopup, signOut, onAuthStateChanged, doc, setDoc, getDoc, onSnapshot };

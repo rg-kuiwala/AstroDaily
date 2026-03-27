@@ -26,7 +26,17 @@ export default function App() {
 
   // Auth Listener
   useEffect(() => {
+    console.log("Initializing Auth Listener...");
+    
+    // Fallback timeout: If auth doesn't respond in 5 seconds, show the UI anyway
+    const timeout = setTimeout(() => {
+      console.warn("Auth listener timed out. Forcing ready state.");
+      setIsAuthReady(true);
+    }, 5000);
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log("Auth state changed:", currentUser ? "User logged in" : "No user");
+      clearTimeout(timeout);
       setUser(currentUser);
       setIsAuthReady(true);
       if (!currentUser) {
@@ -34,7 +44,11 @@ export default function App() {
         if (view !== "horoscope") setView("horoscope");
       }
     });
-    return () => unsubscribe();
+
+    return () => {
+      unsubscribe();
+      clearTimeout(timeout);
+    };
   }, []);
 
   // Firestore Profile Listener

@@ -1,13 +1,25 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Language, ZodiacSign, HoroscopeData, UserProfile, ChatMessage } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+let aiInstance: GoogleGenAI | null = null;
+
+function getAI() {
+  if (!aiInstance) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+      console.error("GEMINI_API_KEY is missing! Please add it to your environment variables.");
+    }
+    aiInstance = new GoogleGenAI({ apiKey: apiKey || "MISSING_KEY" });
+  }
+  return aiInstance;
+}
 
 export async function fetchHoroscope(
   sign: ZodiacSign,
   language: Language,
   period: "daily" | "weekly" | "monthly" = "daily"
 ): Promise<HoroscopeData> {
+  const ai = getAI();
   const prompt = `Generate a ${period} horoscope for ${sign} in ${
     language === "en" ? "English" : "Hindi"
   }. 
@@ -52,6 +64,7 @@ export async function chatWithAstrologer(
   messages: ChatMessage[],
   language: Language
 ): Promise<string> {
+  const ai = getAI();
   try {
     const systemInstruction = `You are an expert Vedic and Western Astrologer. 
     User Profile:
