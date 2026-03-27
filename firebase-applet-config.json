@@ -1,10 +1,10 @@
 {
-  "projectId": "gen-lang-client-0620476771",
-  "appId": "1:135762613536:web:d67f8c05cd8dc838247345",
-  "apiKey": "AIzaSyAUT1hvz8WxTeduVH7tOqaM37D-MzibdYI",
-  "authDomain": "gen-lang-client-0620476771.firebaseapp.com",
+  "projectId": "astrodaily-6ecb4",
+  "appId": "1:353057795089:web:b209bb0a6c9c171b9fd5b0",
+  "apiKey": "AIzaSyANQ8zg4tkus7X6cp5LtjW5Hj29ULYjAmM",
+  "authDomain": "astrodaily-6ecb4.firebaseapp.com",
   "firestoreDatabaseId": "ai-studio-745fc404-663b-49a0-a7e8-7aefa2ef56b4",
-  "storageBucket": "gen-lang-client-0620476771.firebasestorage.app",
-  "messagingSenderId": "135762613536",
-  "measurementId": ""
+  "storageBucket": "astrodaily-6ecb4.firebasestorage.app",
+  "messagingSenderId": "353057795089",
+  "measurementId": "G-9PWXLEQV5Q"
 }
