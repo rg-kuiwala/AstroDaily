@@ -1,4 +1,4 @@
-import React, { Component, ErrorInfo, ReactNode } from "react";
+import React, { ErrorInfo, ReactNode } from "react";
 
 interface Props {
   children: ReactNode;
@@ -9,8 +9,8 @@ interface State {
   error: Error | null;
 }
 
-export class ErrorBoundary extends Component<Props, State> {
-  public state: State = {
+export class ErrorBoundary extends React.Component<Props, State> {
+  public override state: State = {
     hasError: false,
     error: null,
   };
@@ -19,14 +19,14 @@ export class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  public override componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error("Uncaught error:", error, errorInfo);
   }
 
-  public render() {
+  public override render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen flex items-center justify-center bg-mystic-950 p-6 text-center">
+        <div className="min-h-screen flex items-center justify-center bg-mystic-900 p-6 text-center">
           <div className="glass p-8 max-w-md space-y-4">
             <h1 className="text-2xl font-serif gold-text">Something went wrong</h1>
             <p className="text-sm opacity-60">
