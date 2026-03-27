@@ -9,7 +9,8 @@ import { StarfieldBackground } from "./components/StarfieldBackground";
 import { Auth } from "./components/Auth";
 import { Language, ZodiacSign, HoroscopeData, UserProfile } from "./types";
 import { fetchHoroscope } from "./services/geminiService";
-import { auth, db, onAuthStateChanged, doc, setDoc, onSnapshot, signOut, User } from "./firebase";
+import { auth, db, onAuthStateChanged, doc, setDoc, onSnapshot, signOut } from "./firebase";
+import type { User } from "./firebase";
 import { Moon, Star, Bell, Compass, Info, User as UserIcon, MessageCircle, Sparkles, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -143,10 +144,21 @@ export default function App() {
 
   if (!isAuthReady) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="min-h-screen flex flex-col items-center justify-center gap-8">
         <StarfieldBackground />
         <div className="p-4 bg-gold rounded-xl text-mystic-900 animate-pulse">
           <Moon size={32} />
+        </div>
+        <div className="flex flex-col items-center gap-4">
+          <p className="text-white/40 text-xs uppercase tracking-widest animate-pulse">
+            Connecting to the cosmos...
+          </p>
+          <button
+            onClick={() => setIsAuthReady(true)}
+            className="px-6 py-2 glass rounded-full text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-all"
+          >
+            Force Load App
+          </button>
         </div>
       </div>
     );

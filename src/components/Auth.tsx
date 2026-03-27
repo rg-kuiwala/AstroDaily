@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { auth, googleProvider, signInWithPopup } from "../firebase";
+import { auth, googleProvider, signInWithPopup, signInWithRedirect } from "../firebase";
 import { Language } from "../types";
-import { LogIn, Sparkles, AlertCircle, Loader2 } from "lucide-react";
+import { LogIn, Sparkles, AlertCircle, Loader2, ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface AuthProps {
@@ -11,34 +11,40 @@ interface AuthProps {
 export const Auth: React.FC<AuthProps> = ({ language }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showRedirectOption, setShowRedirectOption] = useState(false);
 
-  const handleLogin = async () => {
+  const handleLogin = async (useRedirect = false) => {
     if (loading) return;
     setLoading(true);
     setError(null);
 
     try {
-      await signInWithPopup(auth, googleProvider);
+      if (useRedirect) {
+        await signInWithRedirect(auth, googleProvider);
+      } else {
+        await signInWithPopup(auth, googleProvider);
+      }
     } catch (err: any) {
       console.error("Login failed:", err);
+      setShowRedirectOption(true);
       
       // Handle specific Firebase Auth errors
       if (err.code === "auth/popup-blocked") {
         setError(language === "en" 
-          ? "Popup blocked! Please allow popups for this site in your browser settings to sign in." 
-          : "पॉपअप ब्लॉक हो गया! कृपया साइन इन करने के लिए अपनी ब्राउज़र सेटिंग्स में इस साइट के लिए पॉपअप की अनुमति दें।");
+          ? "Popup blocked! Please allow popups or use the redirect method below." 
+          : "पॉपअप ब्लॉक हो गया! कृपया पॉपअप की अनुमति दें या नीचे दिए गए रीडायरेक्ट तरीके का उपयोग करें।");
+      } else if (err.code === "auth/unauthorized-domain") {
+        setError(language === "en"
+          ? "Unauthorized domain! Please add this URL to your Firebase Console 'Authorized Domains' list."
+          : "अनधिकृत डोमेन! कृपया इस यूआरएल को अपने फायरबेस कंसोल 'अधिकृत डोमेन' सूची में जोड़ें।");
       } else if (err.code === "auth/cancelled-popup-request") {
         setError(language === "en" 
           ? "Login was cancelled. Please try again." 
           : "लॉगिन रद्द कर दिया गया था। कृपया पुनः प्रयास करें।");
-      } else if (err.message?.includes("INTERNAL ASSERTION FAILED")) {
-        setError(language === "en"
-          ? "A technical error occurred. Please refresh the page and try again."
-          : "एक तकनीकी त्रुटि हुई। कृपया पृष्ठ को रिफ्रेश करें और पुनः प्रयास करें।");
       } else {
         setError(language === "en" 
-          ? "Sign in failed. Please check your connection and try again." 
-          : "साइन इन विफल रहा। कृपया अपना कनेक्शन जांचें और पुनः प्रयास करें।");
+          ? `Sign in failed (${err.code || "unknown error"}). Please check your connection.` 
+          : `साइन इन विफल रहा (${err.code || "अज्ञात त्रुटि"})। कृपया अपना कनेक्शन जांचें।`);
       }
     } finally {
       setLoading(false);
@@ -79,7 +85,7 @@ export const Auth: React.FC<AuthProps> = ({ language }) => {
 
       <div className="space-y-4">
         <button
-          onClick={handleLogin}
+          onClick={() => handleLogin(false)}
           disabled={loading}
           className="w-full flex items-center justify-center gap-3 bg-white text-mystic-900 font-bold py-4 rounded-xl hover:scale-105 active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
         >
@@ -90,6 +96,17 @@ export const Auth: React.FC<AuthProps> = ({ language }) => {
           )}
           {l.button}
         </button>
+
+        {showRedirectOption && (
+          <button
+            onClick={() => handleLogin(true)}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 text-white/60 hover:text-white text-xs py-2 transition-all"
+          >
+            {language === "en" ? "Try Redirect Method (Better for Mobile)" : "रीडायरेक्ट विधि आज़माएं (मोबाइल के लिए बेहतर)"}
+            <ArrowRight size={14} />
+          </button>
+        )}
 
         <AnimatePresence>
           {error && (
