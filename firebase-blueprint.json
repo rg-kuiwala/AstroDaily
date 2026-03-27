@@ -1,0 +1,25 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores user birth details and zodiac information.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "User's full name" },
+        "dob": { "type": "string", "description": "Date of birth (YYYY-MM-DD)" },
+        "tob": { "type": "string", "description": "Time of birth (HH:MM)" },
+        "pob": { "type": "string", "description": "Place of birth" },
+        "sign": { "type": "string", "description": "Zodiac sign" },
+        "uid": { "type": "string", "description": "Firebase user UID" },
+        "updatedAt": { "type": "string", "format": "date-time", "description": "Last update timestamp" }
+      },
+      "required": ["name", "dob", "tob", "pob", "sign", "uid"]
+    }
+  },
+  "firestore": {
+    "/users/{uid}": {
+      "schema": "UserProfile",
+      "description": "User profile document keyed by UID."
+    }
+  }
+}

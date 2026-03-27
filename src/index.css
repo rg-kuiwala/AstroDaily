@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  --color-mystic-900: #0a051a;
+  --color-mystic-800: #1a0b3d;
+  --color-mystic-700: #2d1a5e;
+  --color-mystic-600: #4a2d8c;
+  --color-mystic-500: #6b46c1;
+  --color-gold: #d4af37;
+  --font-serif: "Playfair Display", serif;
+}
+
+@layer base {
+  body {
+    @apply bg-mystic-900 text-white font-sans;
+    background-image: 
+      radial-gradient(circle at 50% 50%, rgba(107, 70, 193, 0.15) 0%, transparent 80%),
+      url("https://www.transparenttextures.com/patterns/stardust.png");
+  }
+}
+
+.glass {
+  @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl;
+}
+
+.gold-text {
+  @apply text-gold drop-shadow-[0_0_8px_rgba(212,175,55,0.4)];
+}
+
+.zodiac-card {
+  @apply relative overflow-hidden transition-all duration-300 hover:scale-105 hover:bg-white/10;
+}

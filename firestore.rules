@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    function isValidUserProfile(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() < 100 &&
+             data.dob is string && data.dob.matches("^\\d{4}-\\d{2}-\\d{2}$") &&
+             data.tob is string && data.tob.matches("^\\d{2}:\\d{2}$") &&
+             data.pob is string && data.pob.size() > 0 && data.pob.size() < 200 &&
+             data.sign is string &&
+             data.uid == request.auth.uid;
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create: if isOwner(uid) && isValidUserProfile(request.resource.data);
+      allow update: if isOwner(uid) && isValidUserProfile(request.resource.data);
+      allow delete: if isOwner(uid);
+    }
+  }
+}
