@@ -11,7 +11,7 @@ import { Language, ZodiacSign, HoroscopeData, UserProfile } from "./types";
 import { fetchHoroscope } from "./services/geminiService";
 import { auth, db, onAuthStateChanged, doc, setDoc, onSnapshot, signOut } from "./firebase";
 import type { User } from "./firebase";
-import { Moon, Star, Bell, Compass, Info, User as UserIcon, MessageCircle, Sparkles, LogOut } from "lucide-react";
+import { Moon, Star, Bell, Compass, Info, User as UserIcon, MessageCircle, Sparkles, LogOut, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function App() {
@@ -77,6 +77,7 @@ export default function App() {
     }
 
     setLoading(true);
+    setHoroscope(null); // Clear previous horoscope to force loading state
     try {
       const data = await fetchHoroscope(sign, language, period);
       setHoroscope(data);
@@ -90,15 +91,19 @@ export default function App() {
 
   const handleSaveProfile = async (profile: UserProfile) => {
     if (!user) return;
+    setLoading(true);
     try {
       await setDoc(doc(db, "users", user.uid), {
         ...profile,
         uid: user.uid,
         updatedAt: new Date().toISOString(),
       });
+      // The onSnapshot listener will update userProfile state
       setView("chat");
     } catch (error) {
       console.error("Error saving profile:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -305,8 +310,8 @@ export default function App() {
                       ))}
                     </div>
                   </div>
-                  {horoscope && (
-                    <HoroscopeCard data={horoscope} language={language} loading={loading} />
+                  {(horoscope || loading) && (
+                    <HoroscopeCard data={horoscope!} language={language} loading={loading} />
                   )}
                   <AdPlaceholder type="banner" className="mt-8" />
                 </div>
@@ -342,7 +347,7 @@ export default function App() {
             </motion.div>
           )}
 
-          {view === "chat" && user && userProfile && (
+          {view === "chat" && user && (
             <motion.div
               key="chat-view"
               initial={{ opacity: 0 }}
@@ -351,19 +356,28 @@ export default function App() {
               transition={{ duration: 0.2 }}
               className="space-y-6"
             >
-              <div className="flex justify-between items-center max-w-2xl mx-auto">
-                <h2 className="text-2xl font-serif gold-text flex items-center gap-2">
-                  <MessageCircle size={24} /> {l.chat}
-                </h2>
-                <button
-                  onClick={() => setView("profile")}
-                  className="text-xs opacity-60 hover:opacity-100 flex items-center gap-1"
-                >
-                  <UserIcon size={12} /> {l.profile}
-                </button>
-              </div>
-              <AstroChat userProfile={userProfile} language={language} />
-              <AdPlaceholder type="banner" />
+              {!userProfile ? (
+                <div className="flex flex-col items-center justify-center py-20 gap-4">
+                  <Loader2 className="animate-spin text-gold" size={40} />
+                  <p className="text-white/40 animate-pulse uppercase tracking-widest text-xs">Aligning with your stars...</p>
+                </div>
+              ) : (
+                <>
+                  <div className="flex justify-between items-center max-w-2xl mx-auto">
+                    <h2 className="text-2xl font-serif gold-text flex items-center gap-2">
+                      <MessageCircle size={24} /> {l.chat}
+                    </h2>
+                    <button
+                      onClick={() => setView("profile")}
+                      className="text-xs opacity-60 hover:opacity-100 flex items-center gap-1"
+                    >
+                      <UserIcon size={12} /> {l.profile}
+                    </button>
+                  </div>
+                  <AstroChat userProfile={userProfile} language={language} />
+                  <AdPlaceholder type="banner" />
+                </>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

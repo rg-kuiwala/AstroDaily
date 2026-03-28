@@ -23,35 +23,43 @@ export async function fetchHoroscope(
   const prompt = `Generate a ${period} horoscope for ${sign} in ${
     language === "en" ? "English" : "Hindi"
   }. 
-  Include: prediction, luckyNumber, luckyColor, compatibility, mood.
-  Return JSON.`;
+  Provide a detailed prediction, luckyNumber (number), luckyColor (string), compatibility (zodiac sign), and mood (string).
+  Return ONLY a valid JSON object.`;
 
-  const response = await ai.models.generateContent({
-    model: "gemini-3-flash-preview",
-    contents: prompt,
-    config: {
-      thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
-      responseMimeType: "application/json",
-      responseSchema: {
-        type: Type.OBJECT,
-        properties: {
-          prediction: { type: Type.STRING },
-          luckyNumber: { type: Type.NUMBER },
-          luckyColor: { type: Type.STRING },
-          compatibility: { type: Type.STRING },
-          mood: { type: Type.STRING },
+  try {
+    const response = await ai.models.generateContent({
+      model: "gemini-3-flash-preview",
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            prediction: { type: Type.STRING },
+            luckyNumber: { type: Type.NUMBER },
+            luckyColor: { type: Type.STRING },
+            compatibility: { type: Type.STRING },
+            mood: { type: Type.STRING },
+          },
+          required: ["prediction", "luckyNumber", "luckyColor", "compatibility", "mood"],
         },
-        required: ["prediction", "luckyNumber", "luckyColor", "compatibility", "mood"],
       },
-    },
-  });
+    });
 
-  const data = JSON.parse(response.text);
-  return {
-    sign,
-    date: new Date().toLocaleDateString(),
-    ...data,
-  };
+    if (!response || !response.text) {
+      throw new Error("Empty response from AI");
+    }
+
+    const data = JSON.parse(response.text);
+    return {
+      sign,
+      date: new Date().toLocaleDateString(),
+      ...data,
+    };
+  } catch (error) {
+    console.error("Fetch Horoscope Error:", error);
+    throw error;
+  }
 }
 
 export async function chatWithAstrologer(
@@ -61,13 +69,13 @@ export async function chatWithAstrologer(
 ): Promise<string> {
   const ai = getAI();
   try {
-    const systemInstruction = `You are an expert Vedic and Western Astrologer. 
+    const systemInstruction = `You are an expert Vedic and Western Astrologer named NamasteAstro AI. 
     User Profile: ${JSON.stringify(userProfile)}
     
-    Provide personalized astrological advice. 
+    Provide personalized astrological advice based on the user's birth details. 
     Be empathetic, mystical, and professional. 
     Respond in ${language === "en" ? "English" : "Hindi"}.
-    Keep your responses concise (max 100 words).`;
+    Keep your responses concise and insightful (max 120 words).`;
 
     const lastMessage = messages[messages.length - 1].text;
     
@@ -76,15 +84,13 @@ export async function chatWithAstrologer(
       contents: [
         {
           role: "user",
-          parts: [{ text: `My question: ${lastMessage}` }]
+          parts: [{ text: lastMessage }]
         }
       ],
       config: {
         systemInstruction,
-        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
-        temperature: 0.7,
+        temperature: 0.8,
         topP: 0.95,
-        topK: 40,
       },
     });
 
@@ -94,7 +100,7 @@ export async function chatWithAstrologer(
 
     return response.text;
   } catch (error) {
-    console.error("Gemini Service Error:", error);
+    console.error("Gemini Chat Error:", error);
     throw error;
   }
 }

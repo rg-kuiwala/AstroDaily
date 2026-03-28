@@ -57,14 +57,15 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
   const l = labels[language];
 
   const handleShare = async () => {
-    const text = `Check out my ${data.sign} horoscope on NamasteAstro! 🌟\n\n"${data.prediction}"\n\nLucky Number: ${data.luckyNumber}\nLucky Color: ${data.luckyColor}\n\nRead more at: https://namsteastro.vercel.app/`;
+    const shareUrl = window.location.origin;
+    const text = `Check out my ${data.sign} horoscope on NamasteAstro! 🌟\n\n"${data.prediction}"\n\nLucky Number: ${data.luckyNumber}\nLucky Color: ${data.luckyColor}\n\nRead more at: ${shareUrl}`;
     
     if (navigator.share) {
       try {
         await navigator.share({
           title: 'My Horoscope - NamasteAstro',
           text: text,
-          url: 'https://namsteastro.vercel.app/',
+          url: shareUrl,
         });
       } catch (err) {
         console.error('Error sharing:', err);
@@ -85,10 +86,11 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
       <div className="absolute top-6 right-6 z-20">
         <button 
           onClick={handleShare}
-          className="p-3 glass hover:bg-white/10 text-gold/60 hover:text-gold transition-all rounded-2xl"
+          className="p-4 bg-gold text-mystic-900 hover:scale-110 active:scale-95 transition-all rounded-2xl shadow-lg flex items-center gap-2 font-bold text-sm"
           title="Share Horoscope"
         >
-          <Share2 size={20} />
+          <Share2 size={18} />
+          <span className="hidden sm:inline">Share</span>
         </button>
       </div>
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-gold/5 rounded-full blur-3xl" />
