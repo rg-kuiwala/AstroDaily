@@ -67,23 +67,29 @@ export default function App() {
 
   const [horoscopeCache, setHoroscopeCache] = useState<Record<string, HoroscopeData>>({});
 
+  const [error, setError] = useState<string | null>(null);
+
   const handleSignSelect = async (sign: ZodiacSign) => {
     setSelectedSign(sign);
     const cacheKey = `${sign}-${language}-${period}`;
     
     if (horoscopeCache[cacheKey]) {
       setHoroscope(horoscopeCache[cacheKey]);
+      setError(null);
       return;
     }
 
     setLoading(true);
-    setHoroscope(null); // Clear previous horoscope to force loading state
+    setHoroscope(null);
+    setError(null);
+    
     try {
       const data = await fetchHoroscope(sign, language, period);
       setHoroscope(data);
       setHoroscopeCache(prev => ({ ...prev, [cacheKey]: data }));
-    } catch (error) {
-      console.error("Error fetching horoscope:", error);
+    } catch (err) {
+      console.error("Error fetching horoscope:", err);
+      setError(language === "en" ? "The stars are currently hidden. Please try again in a moment." : "तारे वर्तमान में छिपे हुए हैं। कृपया कुछ क्षण बाद पुनः प्रयास करें।");
     } finally {
       setLoading(false);
     }
@@ -310,8 +316,27 @@ export default function App() {
                       ))}
                     </div>
                   </div>
-                  {(horoscope || loading) && (
-                    <HoroscopeCard data={horoscope!} language={language} loading={loading} />
+                  {(horoscope || loading || error) && (
+                    <div className="space-y-6">
+                      {error && (
+                        <motion.div 
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          className="glass p-6 text-center text-red-400 border-red-500/20 max-w-2xl mx-auto"
+                        >
+                          <p>{error}</p>
+                          <button 
+                            onClick={() => selectedSign && handleSignSelect(selectedSign)}
+                            className="mt-4 px-6 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-xs uppercase tracking-widest transition-all"
+                          >
+                            Retry
+                          </button>
+                        </motion.div>
+                      )}
+                      {(horoscope || loading) && (
+                        <HoroscopeCard data={horoscope!} language={language} loading={loading} />
+                      )}
+                    </div>
                   )}
                   <AdPlaceholder type="banner" className="mt-8" />
                 </div>

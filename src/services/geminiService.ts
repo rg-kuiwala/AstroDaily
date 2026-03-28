@@ -20,17 +20,19 @@ export async function fetchHoroscope(
   period: "daily" | "weekly" | "monthly" = "daily"
 ): Promise<HoroscopeData> {
   const ai = getAI();
-  const prompt = `Generate a ${period} horoscope for ${sign} in ${
+  const systemInstruction = `You are a professional astrologer. Generate a ${period} horoscope for ${sign} in ${
     language === "en" ? "English" : "Hindi"
   }. 
   Provide a detailed prediction, luckyNumber (number), luckyColor (string), compatibility (zodiac sign), and mood (string).
   Return ONLY a valid JSON object.`;
 
   try {
-    const response = await ai.models.generateContent({
+    // Add a timeout to the fetch
+    const fetchPromise = ai.models.generateContent({
       model: "gemini-3-flash-preview",
-      contents: prompt,
+      contents: "Generate my horoscope.",
       config: {
+        systemInstruction,
         responseMimeType: "application/json",
         responseSchema: {
           type: Type.OBJECT,
@@ -45,6 +47,12 @@ export async function fetchHoroscope(
         },
       },
     });
+
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error("Request timed out")), 15000)
+    );
+
+    const response = await Promise.race([fetchPromise, timeoutPromise]) as any;
 
     if (!response || !response.text) {
       throw new Error("Empty response from AI");

@@ -57,7 +57,7 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
   const l = labels[language];
 
   const handleShare = async () => {
-    const shareUrl = window.location.origin;
+    const shareUrl = "https://NamsteAstro.vercel.app";
     const text = `Check out my ${data.sign} horoscope on NamasteAstro! 🌟\n\n"${data.prediction}"\n\nLucky Number: ${data.luckyNumber}\nLucky Color: ${data.luckyColor}\n\nRead more at: ${shareUrl}`;
     
     if (navigator.share) {

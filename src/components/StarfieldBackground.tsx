@@ -12,7 +12,7 @@ export const StarfieldBackground: React.FC = () => {
 
     let animationFrameId: number;
     let stars: { x: number; y: number; size: number; speed: number; opacity: number }[] = [];
-    const starCount = 100;
+    const starCount = 60; // Reduced for performance
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -34,33 +34,22 @@ export const StarfieldBackground: React.FC = () => {
     };
 
     const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Draw background base
       ctx.fillStyle = "#05020a";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw stars
       stars.forEach((star) => {
-        ctx.beginPath();
-        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
-        
-        // Some stars are gold, some are white
-        const color = star.size > 1.5 ? "rgba(212, 175, 55, " : "rgba(255, 255, 255, ";
-        ctx.fillStyle = `${color}${star.opacity})`;
-        ctx.fill();
+        ctx.fillStyle = star.size > 1.5 ? `rgba(212, 175, 55, ${star.opacity})` : `rgba(255, 255, 255, ${star.opacity})`;
+        ctx.fillRect(star.x, star.y, star.size, star.size); // Use fillRect instead of arc for speed
 
-        // Update star position (slow drift)
         star.y -= star.speed;
-        star.x += star.speed * 0.2; // Slight diagonal drift
+        star.x += star.speed * 0.1;
         
         if (star.y < 0) star.y = canvas.height;
         if (star.x > canvas.width) star.x = 0;
         
-        // Twinkle effect
-        star.opacity += (Math.random() - 0.5) * 0.02;
+        star.opacity += (Math.random() - 0.5) * 0.01;
         if (star.opacity < 0.1) star.opacity = 0.1;
-        if (star.opacity > 0.8) star.opacity = 0.8;
+        if (star.opacity > 0.7) star.opacity = 0.7;
       });
 
       animationFrameId = requestAnimationFrame(draw);
