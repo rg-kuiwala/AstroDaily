@@ -25,11 +25,13 @@ export interface HoroscopeData {
 }
 
 export interface UserProfile {
+  uid: string;
   name: string;
   dob: string;
   tob: string;
   pob: string;
   sign: ZodiacSign;
+  notificationsEnabled?: boolean;
 }
 
 export interface ChatMessage {

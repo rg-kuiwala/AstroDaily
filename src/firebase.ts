@@ -10,7 +10,7 @@ import {
   setPersistence,
   browserSessionPersistence
 } from "firebase/auth";
-import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "firebase/firestore";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot, updateDoc } from "firebase/firestore";
 import firebaseConfig from "../firebase-applet-config.json";
 
 console.log("Initializing Firebase with project:", firebaseConfig.projectId);
@@ -34,5 +34,5 @@ export const db = firebaseConfig.firestoreDatabaseId && firebaseConfig.firestore
   : getFirestore(app);
 export const googleProvider = new GoogleAuthProvider();
 
-export { signInWithPopup, signInWithRedirect, signOut, onAuthStateChanged, doc, setDoc, getDoc, onSnapshot };
+export { signInWithPopup, signInWithRedirect, signOut, onAuthStateChanged, doc, setDoc, getDoc, onSnapshot, updateDoc };
 export type { User };

@@ -5,8 +5,9 @@ import { LanguageToggle } from "./components/LanguageToggle";
 import { AdPlaceholder } from "./components/AdPlaceholder";
 import { UserProfileForm } from "./components/UserProfileForm";
 import { AstroChat } from "./components/AstroChat";
-import { StarfieldBackground } from "./components/StarfieldBackground";
+import { NotificationSettings } from "./components/NotificationSettings";
 import { Auth } from "./components/Auth";
+import { NotificationManager } from "./services/NotificationManager";
 import { Language, ZodiacSign, HoroscopeData, UserProfile } from "./types";
 import { fetchHoroscope } from "./services/geminiService";
 import { auth, db, onAuthStateChanged, doc, setDoc, onSnapshot, signOut } from "./firebase";
@@ -54,7 +55,13 @@ export default function App() {
 
   // Firestore Profile Listener
   useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      NotificationManager.getInstance().stop();
+      return;
+    }
+    
+    NotificationManager.getInstance().init(user.uid);
+    
     const unsubscribe = onSnapshot(doc(db, "users", user.uid), (snapshot) => {
       if (snapshot.exists()) {
         setUserProfile(snapshot.data() as UserProfile);
@@ -70,10 +77,12 @@ export default function App() {
   const [error, setError] = useState<string | null>(null);
 
   const handleSignSelect = async (sign: ZodiacSign) => {
+    console.log("Zodiac Sign Selected:", sign);
     setSelectedSign(sign);
     const cacheKey = `${sign}-${language}-${period}`;
     
     if (horoscopeCache[cacheKey]) {
+      console.log("Using cached horoscope for:", cacheKey);
       setHoroscope(horoscopeCache[cacheKey]);
       setError(null);
       return;
@@ -84,16 +93,33 @@ export default function App() {
     setError(null);
     
     try {
+      console.log("Fetching fresh horoscope for:", sign);
       const data = await fetchHoroscope(sign, language, period);
+      console.log("Horoscope Fetch Success:", data);
       setHoroscope(data);
       setHoroscopeCache(prev => ({ ...prev, [cacheKey]: data }));
     } catch (err) {
-      console.error("Error fetching horoscope:", err);
+      console.error("Error in handleSignSelect:", err);
       setError(language === "en" ? "The stars are currently hidden. Please try again in a moment." : "तारे वर्तमान में छिपे हुए हैं। कृपया कुछ क्षण बाद पुनः प्रयास करें।");
     } finally {
       setLoading(false);
     }
   };
+
+  // Notification Simulation
+  useEffect(() => {
+    if (userProfile?.notificationsEnabled && typeof Notification !== "undefined" && Notification.permission === "granted") {
+      console.log("Notifications are enabled. Scheduling daily update simulation...");
+      // Simulate a notification after 10 seconds for demo purposes
+      const timer = setTimeout(() => {
+        new Notification("NamsteAstro Daily Update", {
+          body: `Good morning ${userProfile.name}! Your ${userProfile.sign} horoscope is ready.`,
+          icon: "/favicon.ico"
+        });
+      }, 10000);
+      return () => clearTimeout(timer);
+    }
+  }, [userProfile]);
 
   const handleSaveProfile = async (profile: UserProfile) => {
     if (!user) return;
@@ -165,8 +191,7 @@ export default function App() {
 
   if (!isAuthReady) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-8">
-        <StarfieldBackground />
+      <div className="min-h-screen flex flex-col items-center justify-center gap-8 bg-[#05020a]">
         <div className="atmosphere" />
         <motion.div 
           initial={{ opacity: 0 }}
@@ -186,8 +211,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col relative selection:bg-gold/30">
-      <StarfieldBackground />
+    <div className="min-h-screen flex flex-col relative selection:bg-gold/30 bg-[#05020a]">
       <div className="atmosphere" />
       
       {/* Header */}
@@ -363,12 +387,18 @@ export default function App() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
+              className="space-y-8"
             >
               <UserProfileForm
                 language={language}
                 onSave={handleSaveProfile}
                 initialProfile={userProfile}
               />
+              {userProfile && (
+                <div className="max-w-2xl mx-auto">
+                  <NotificationSettings userProfile={userProfile} language={language} />
+                </div>
+              )}
             </motion.div>
           )}
 

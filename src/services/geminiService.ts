@@ -6,6 +6,7 @@ let aiInstance: GoogleGenAI | null = null;
 function getAI() {
   if (!aiInstance) {
     const apiKey = process.env.GEMINI_API_KEY;
+    console.log("Gemini API Key Check:", apiKey ? "Key Found" : "Key MISSING");
     if (!apiKey) {
       console.error("GEMINI_API_KEY is missing! Please add it to your environment variables.");
     }
@@ -19,6 +20,7 @@ export async function fetchHoroscope(
   language: Language,
   period: "daily" | "weekly" | "monthly" = "daily"
 ): Promise<HoroscopeData> {
+  console.log(`Fetching horoscope for ${sign} (${period}) in ${language}...`);
   const ai = getAI();
   const systemInstruction = `You are a professional astrologer. Generate a ${period} horoscope for ${sign} in ${
     language === "en" ? "English" : "Hindi"
@@ -49,16 +51,18 @@ export async function fetchHoroscope(
     });
 
     const timeoutPromise = new Promise((_, reject) => 
-      setTimeout(() => reject(new Error("Request timed out")), 15000)
+      setTimeout(() => reject(new Error("Request timed out")), 10000)
     );
 
     const response = await Promise.race([fetchPromise, timeoutPromise]) as any;
+    console.log("Gemini Response Received:", response ? "Success" : "Empty");
 
     if (!response || !response.text) {
       throw new Error("Empty response from AI");
     }
 
     const data = JSON.parse(response.text);
+    console.log("Parsed Horoscope Data:", data);
     return {
       sign,
       date: new Date().toLocaleDateString(),

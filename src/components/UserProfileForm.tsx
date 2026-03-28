@@ -17,11 +17,13 @@ export const UserProfileForm: React.FC<UserProfileFormProps> = ({
 }) => {
   const [formData, setFormData] = useState<UserProfile>(
     initialProfile || {
+      uid: "",
       name: "",
       dob: "",
       tob: "",
       pob: "",
       sign: "Aries",
+      notificationsEnabled: false,
     }
   );
 

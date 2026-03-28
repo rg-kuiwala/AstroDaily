@@ -28,7 +28,10 @@ export const ZodiacGrid: React.FC<ZodiacGridProps> = ({
             duration: 0.2,
             delay: index * 0.01 
           }}
-          onClick={() => onSelect(sign.id)}
+          onClick={() => {
+            console.log("Zodiac Grid Button Clicked:", sign.id);
+            onSelect(sign.id);
+          }}
           className={cn(
             "glass-dark zodiac-card p-6 flex flex-col items-center justify-center gap-4 group",
             selectedSign === sign.id ? "border-gold bg-gold/10 ring-2 ring-gold/20" : "hover:border-white/20"
