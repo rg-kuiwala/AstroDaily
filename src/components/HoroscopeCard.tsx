@@ -52,8 +52,9 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
       className="glass-dark p-10 md:p-14 w-full max-w-3xl mx-auto relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
     >
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-gold/5 rounded-full blur-3xl" />
@@ -98,9 +99,9 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
         ].map((item, i) => (
           <motion.div 
             key={i}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 + i * 0.1 }}
+            transition={{ duration: 0.2 }}
             className="p-5 glass border-white/5 flex flex-col items-center gap-3 text-center group hover:bg-white/5 transition-colors"
           >
             <item.icon size={20} className="text-gold opacity-60 group-hover:opacity-100 transition-opacity" />

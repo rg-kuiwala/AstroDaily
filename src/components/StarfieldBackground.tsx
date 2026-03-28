@@ -12,7 +12,7 @@ export const StarfieldBackground: React.FC = () => {
 
     let animationFrameId: number;
     let stars: { x: number; y: number; size: number; speed: number; opacity: number }[] = [];
-    const starCount = 200;
+    const starCount = 100;
 
     const resize = () => {
       canvas.width = window.innerWidth;
@@ -40,23 +40,6 @@ export const StarfieldBackground: React.FC = () => {
       ctx.fillStyle = "#05020a";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-      // Draw subtle nebulae
-      const drawNebula = (x: number, y: number, radius: number, color: string) => {
-        const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
-        grad.addColorStop(0, color);
-        grad.addColorStop(1, "transparent");
-        ctx.fillStyle = grad;
-        ctx.globalAlpha = 0.05;
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
-      };
-
-      drawNebula(canvas.width * 0.2, canvas.height * 0.3, canvas.width * 0.4, "#1a0b3d");
-      drawNebula(canvas.width * 0.8, canvas.height * 0.7, canvas.width * 0.5, "#2d1a5e");
-      drawNebula(canvas.width * 0.5, canvas.height * 0.5, canvas.width * 0.3, "#3a1510");
-
       // Draw stars
       stars.forEach((star) => {
         ctx.beginPath();
@@ -65,15 +48,6 @@ export const StarfieldBackground: React.FC = () => {
         // Some stars are gold, some are white
         const color = star.size > 1.5 ? "rgba(212, 175, 55, " : "rgba(255, 255, 255, ";
         ctx.fillStyle = `${color}${star.opacity})`;
-        
-        // Add glow to larger stars
-        if (star.size > 1.5) {
-          ctx.shadowBlur = 10;
-          ctx.shadowColor = "rgba(212, 175, 55, 0.5)";
-        } else {
-          ctx.shadowBlur = 0;
-        }
-        
         ctx.fill();
 
         // Update star position (slow drift)

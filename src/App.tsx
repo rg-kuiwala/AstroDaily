@@ -109,7 +109,7 @@ export default function App() {
 
   const labels = {
     en: {
-      title: "AstroDaily",
+      title: "NamasteAstro",
       subtitle: "Your daily celestial guidance",
       selectSign: "Choose Your Zodiac Sign",
       daily: "Daily",
@@ -124,7 +124,7 @@ export default function App() {
       logout: "Logout",
     },
     hi: {
-      title: "एस्ट्रोडेली",
+      title: "नमस्तेएस्ट्रो",
       subtitle: "आपका दैनिक खगोलीय मार्गदर्शन",
       selectSign: "अपनी राशि चुनें",
       daily: "दैनिक",
@@ -148,8 +148,9 @@ export default function App() {
         <StarfieldBackground />
         <div className="atmosphere" />
         <motion.div 
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
           className="p-6 bg-gold rounded-3xl text-mystic-900 shadow-[0_0_30px_rgba(212,175,55,0.3)]"
         >
           <Moon size={48} className="animate-pulse" />
@@ -171,8 +172,9 @@ export default function App() {
       {/* Header */}
       <header className="p-8 flex items-center justify-between max-w-7xl mx-auto w-full">
         <motion.div 
-          initial={{ x: -20, opacity: 0 }}
-          animate={{ x: 0, opacity: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3 }}
           className="flex items-center gap-4 group cursor-pointer"
         >
           <div className="p-3 bg-gold rounded-2xl text-mystic-900 shadow-lg group-hover:rotate-12 transition-transform duration-500">
@@ -245,9 +247,10 @@ export default function App() {
           {view === "horoscope" && (
             <motion.div
               key="general-view"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               className="space-y-8"
             >
               {!selectedSign ? (
@@ -304,9 +307,10 @@ export default function App() {
           {(view === "chat" || view === "profile") && !user && (
             <motion.div
               key="auth-view"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
             >
               <Auth language={language} />
             </motion.div>
@@ -315,9 +319,10 @@ export default function App() {
           {view === "profile" && user && (
             <motion.div
               key="profile-view"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
             >
               <UserProfileForm
                 language={language}
@@ -330,9 +335,10 @@ export default function App() {
           {view === "chat" && user && userProfile && (
             <motion.div
               key="chat-view"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
               className="space-y-6"
             >
               <div className="flex justify-between items-center max-w-2xl mx-auto">
@@ -356,7 +362,7 @@ export default function App() {
       {/* Footer */}
       <footer className="p-8 border-t border-white/5 mt-12 bg-mystic-900/50 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6 opacity-40 text-xs">
-          <p>© 2026 AstroDaily. All celestial rights reserved.</p>
+          <p>© 2026 NamasteAstro. All celestial rights reserved.</p>
           <div className="flex gap-6">
             <a href="#" className="hover:text-gold transition-colors flex items-center gap-1">
               <Info size={12} /> Privacy Policy

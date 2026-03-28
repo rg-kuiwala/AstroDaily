@@ -23,19 +23,19 @@
 }
 
 .glass {
-  @apply bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl;
+  @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl;
 }
 
 .glass-dark {
-  @apply bg-black/40 backdrop-blur-2xl border border-white/5 rounded-3xl;
+  @apply bg-black/40 backdrop-blur-lg border border-white/5 rounded-3xl;
 }
 
 .gold-text {
-  @apply text-gold drop-shadow-[0_0_12px_rgba(212,175,55,0.3)] tracking-tight;
+  @apply text-gold drop-shadow-[0_0_8px_rgba(212,175,55,0.2)] tracking-tight;
 }
 
 .zodiac-card {
-  @apply relative overflow-hidden transition-all duration-500 hover:scale-[1.02] hover:bg-white/10 active:scale-95;
+  @apply relative overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:bg-white/10 active:scale-95;
 }
 
 .atmosphere {
