@@ -65,12 +65,22 @@ export default function App() {
     return () => unsubscribe();
   }, [user]);
 
+  const [horoscopeCache, setHoroscopeCache] = useState<Record<string, HoroscopeData>>({});
+
   const handleSignSelect = async (sign: ZodiacSign) => {
     setSelectedSign(sign);
+    const cacheKey = `${sign}-${language}-${period}`;
+    
+    if (horoscopeCache[cacheKey]) {
+      setHoroscope(horoscopeCache[cacheKey]);
+      return;
+    }
+
     setLoading(true);
     try {
       const data = await fetchHoroscope(sign, language, period);
       setHoroscope(data);
+      setHoroscopeCache(prev => ({ ...prev, [cacheKey]: data }));
     } catch (error) {
       console.error("Error fetching horoscope:", error);
     } finally {

@@ -1,7 +1,7 @@
 import React from "react";
 import { HoroscopeData, Language } from "../types";
 import { motion } from "framer-motion";
-import { Sparkles, Heart, Palette, Hash, Moon } from "lucide-react";
+import { Sparkles, Heart, Palette, Hash, Moon, Share2 } from "lucide-react";
 
 interface HoroscopeCardProps {
   data: HoroscopeData;
@@ -16,14 +16,20 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="glass-dark p-12 w-full max-w-3xl mx-auto animate-pulse space-y-8">
-        <div className="h-12 bg-white/5 rounded-2xl w-1/2 mx-auto"></div>
-        <div className="space-y-4">
+      <div className="glass-dark p-12 w-full max-w-3xl mx-auto animate-pulse space-y-8 flex flex-col items-center">
+        <div className="p-4 bg-white/5 rounded-full mb-4">
+          <Moon size={32} className="text-white/20 animate-spin-slow" />
+        </div>
+        <p className="text-xs uppercase tracking-[0.3em] text-white/20 font-bold">Consulting the Stars...</p>
+        <div className="h-12 bg-white/5 rounded-2xl w-1/2"></div>
+        <div className="space-y-4 w-full">
           <div className="h-4 bg-white/5 rounded-full w-full"></div>
           <div className="h-4 bg-white/5 rounded-full w-full"></div>
           <div className="h-4 bg-white/5 rounded-full w-3/4"></div>
         </div>
-        <div className="grid grid-cols-2 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
+          <div className="h-16 bg-white/5 rounded-2xl"></div>
+          <div className="h-16 bg-white/5 rounded-2xl"></div>
           <div className="h-16 bg-white/5 rounded-2xl"></div>
           <div className="h-16 bg-white/5 rounded-2xl"></div>
         </div>
@@ -50,6 +56,25 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
 
   const l = labels[language];
 
+  const handleShare = async () => {
+    const text = `Check out my ${data.sign} horoscope on NamasteAstro! 🌟\n\n"${data.prediction}"\n\nLucky Number: ${data.luckyNumber}\nLucky Color: ${data.luckyColor}\n\nRead more at: https://namsteastro.vercel.app/`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'My Horoscope - NamasteAstro',
+          text: text,
+          url: 'https://namsteastro.vercel.app/',
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(text);
+      alert(language === "en" ? "Horoscope copied to clipboard!" : "राशिफल क्लिपबोर्ड पर कॉपी किया गया!");
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -57,6 +82,15 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
       transition={{ duration: 0.3 }}
       className="glass-dark p-10 md:p-14 w-full max-w-3xl mx-auto relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
     >
+      <div className="absolute top-6 right-6 z-20">
+        <button 
+          onClick={handleShare}
+          className="p-3 glass hover:bg-white/10 text-gold/60 hover:text-gold transition-all rounded-2xl"
+          title="Share Horoscope"
+        >
+          <Share2 size={20} />
+        </button>
+      </div>
       <div className="absolute -top-24 -right-24 w-64 h-64 bg-gold/5 rounded-full blur-3xl" />
       <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
 

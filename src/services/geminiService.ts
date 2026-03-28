@@ -1,4 +1,4 @@
-import { GoogleGenAI, Type } from "@google/genai";
+import { GoogleGenAI, Type, ThinkingLevel } from "@google/genai";
 import { Language, ZodiacSign, HoroscopeData, UserProfile, ChatMessage } from "../types";
 
 let aiInstance: GoogleGenAI | null = null;
@@ -23,19 +23,14 @@ export async function fetchHoroscope(
   const prompt = `Generate a ${period} horoscope for ${sign} in ${
     language === "en" ? "English" : "Hindi"
   }. 
-  Include:
-  - A detailed prediction
-  - Lucky number
-  - Lucky color
-  - Compatibility with another zodiac sign
-  - General mood
-  
-  Return the response in JSON format.`;
+  Include: prediction, luckyNumber, luckyColor, compatibility, mood.
+  Return JSON.`;
 
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
     contents: prompt,
     config: {
+      thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
       responseMimeType: "application/json",
       responseSchema: {
         type: Type.OBJECT,
@@ -67,32 +62,26 @@ export async function chatWithAstrologer(
   const ai = getAI();
   try {
     const systemInstruction = `You are an expert Vedic and Western Astrologer. 
-    User Profile:
-    - Name: ${userProfile.name}
-    - DOB: ${userProfile.dob}
-    - TOB: ${userProfile.tob}
-    - POB: ${userProfile.pob}
-    - Zodiac Sign: ${userProfile.sign}
+    User Profile: ${JSON.stringify(userProfile)}
     
-    Provide personalized astrological advice based on these details. 
+    Provide personalized astrological advice. 
     Be empathetic, mystical, and professional. 
     Respond in ${language === "en" ? "English" : "Hindi"}.
-    If the user asks non-astrological questions, gently guide them back to astrology.
-    Keep your responses concise but insightful (max 150 words).`;
+    Keep your responses concise (max 100 words).`;
 
     const lastMessage = messages[messages.length - 1].text;
     
-    // Using generateContent directly for better reliability in this environment
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents: [
         {
           role: "user",
-          parts: [{ text: `My details: ${JSON.stringify(userProfile)}. My question: ${lastMessage}` }]
+          parts: [{ text: `My question: ${lastMessage}` }]
         }
       ],
       config: {
         systemInstruction,
+        thinkingConfig: { thinkingLevel: ThinkingLevel.LOW },
         temperature: 0.7,
         topP: 0.95,
         topK: 40,
@@ -106,7 +95,6 @@ export async function chatWithAstrologer(
     return response.text;
   } catch (error) {
     console.error("Gemini Service Error:", error);
-    // Re-throw to be caught by the component
     throw error;
   }
 }
