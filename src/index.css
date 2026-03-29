@@ -1,42 +1,45 @@
 @import "tailwindcss";
 
 @theme {
-  --color-mystic-950: #05020a;
-  --color-mystic-900: #0a051a;
-  --color-mystic-800: #1a0b3d;
-  --color-mystic-700: #2d1a5e;
-  --color-mystic-600: #4a2d8c;
-  --color-mystic-500: #6b46c1;
-  --color-gold: #d4af37;
+  --color-mystic-950: #050505;
+  --color-mystic-900: #0a0a0a;
+  --color-mystic-800: #1a1a1a;
+  --color-gold: #f27d26; /* Warm orange-gold for high contrast */
   --color-accent: #ff4e00;
-  --font-serif: "Playfair Display", serif;
+  --font-display: "Anton", sans-serif;
+  --font-serif: "Cormorant Garamond", serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --animate-spin-slow: spin 8s linear infinite;
+  --animate-spin-slow: spin 12s linear infinite;
 }
 
 @layer base {
   body {
-    @apply bg-mystic-950 text-white font-sans antialiased overflow-x-hidden;
-    background: radial-gradient(circle at 50% 30%, #1a0b3d 0%, transparent 70%),
-                radial-gradient(circle at 10% 80%, rgba(255, 78, 0, 0.05) 0%, transparent 50%),
-                #05020a;
+    @apply bg-mystic-950 text-white font-sans antialiased overflow-x-hidden selection:bg-gold selection:text-black;
+    background: 
+      radial-gradient(circle at 50% -20%, #3a1510 0%, transparent 60%),
+      radial-gradient(circle at 10% 80%, rgba(242, 125, 38, 0.05) 0%, transparent 50%),
+      #050505;
+  }
+
+  h1, h2, h3 {
+    @apply font-display uppercase tracking-tight;
   }
 }
 
 .glass {
-  @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl shadow-2xl;
+  @apply bg-white/[0.03] backdrop-blur-2xl border border-white/10 rounded-[2rem] shadow-2xl;
 }
 
 .glass-dark {
-  @apply bg-black/40 backdrop-blur-lg border border-white/5 rounded-3xl;
+  @apply bg-black/60 backdrop-blur-3xl border border-white/5 rounded-[2.5rem];
 }
 
 .gold-text {
-  @apply text-gold drop-shadow-[0_0_8px_rgba(212,175,55,0.2)] tracking-tight;
+  @apply text-gold drop-shadow-[0_0_12px_rgba(242,125,38,0.3)] tracking-tighter;
 }
 
 .zodiac-card {
-  @apply relative overflow-hidden transition-all duration-300 hover:scale-[1.01] hover:bg-white/10 active:scale-95;
+  @apply relative overflow-hidden transition-all duration-500 hover:bg-white/[0.07] active:scale-95 border border-white/5;
 }
 
 .atmosphere {
@@ -46,16 +49,27 @@
   width: 100%;
   height: 100%;
   z-index: -1;
-  background: radial-gradient(circle at 50% 30%, #3a1510 0%, transparent 60%),
-              radial-gradient(circle at 10% 80%, #ff4e00 0%, transparent 50%);
-  filter: blur(100px);
-  opacity: 0.15;
+  background: 
+    radial-gradient(circle at 80% 20%, rgba(242, 125, 38, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(255, 78, 0, 0.08) 0%, transparent 40%);
+  filter: blur(120px);
+  opacity: 0.6;
   pointer-events: none;
 }
 
-/* Custom Scrollbar for a premium feel */
+.editorial-title {
+  font-size: clamp(4rem, 15vw, 12rem);
+  line-height: 0.85;
+  letter-spacing: -0.04em;
+}
+
+.micro-label {
+  @apply text-[10px] uppercase tracking-[0.3em] font-bold opacity-50;
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -63,10 +77,19 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(242, 125, 38, 0.2);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(242, 125, 38, 0.4);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+.float {
+  animation: float 6s ease-in-out infinite;
 }

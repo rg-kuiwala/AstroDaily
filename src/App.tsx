@@ -211,101 +211,96 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col relative selection:bg-gold/30 bg-[#05020a]">
+    <div className="min-h-screen flex flex-col relative selection:bg-gold/30 bg-mystic-950">
       <div className="atmosphere" />
       
       {/* Header */}
-      <header className="p-8 flex items-center justify-between max-w-7xl mx-auto w-full">
+      <header className="p-6 md:p-12 flex flex-col md:flex-row items-center justify-between max-w-[1600px] mx-auto w-full gap-8">
         <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.3 }}
-          className="flex items-center gap-4 group cursor-pointer"
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col gap-2 group cursor-pointer"
+          onClick={() => setView("horoscope")}
         >
-          <div className="p-3 bg-gold rounded-2xl text-mystic-900 shadow-lg group-hover:rotate-12 transition-transform duration-500">
-            <Moon size={28} />
+          <div className="flex items-center gap-4">
+            <div className="p-2 bg-gold rounded-full text-mystic-900 shadow-2xl group-hover:rotate-[360deg] transition-transform duration-1000">
+              <Moon size={24} />
+            </div>
+            <span className="micro-label text-gold">Celestial Guidance</span>
           </div>
-          <div>
-            <h1 className="text-3xl font-serif font-bold tracking-tight gold-text">
-              {l.title}
-            </h1>
-            <p className="text-[10px] text-white/40 uppercase tracking-[0.3em] font-medium">
-              Celestial Insights
-            </p>
-          </div>
+          <h1 className="editorial-title gold-text">
+            {l.title}
+          </h1>
         </motion.div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center justify-center gap-6">
           <LanguageToggle language={language} onToggle={setLanguage} />
-          {user ? (
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setView("profile")}
-                className={`p-3 glass rounded-2xl transition-all ${view === 'profile' ? 'bg-gold text-mystic-900' : 'hover:bg-white/10 text-white/60'}`}
-                title={l.profile}
-              >
-                <UserIcon size={20} />
-              </button>
-              <button
-                onClick={handleLogout}
-                className="p-3 glass rounded-2xl hover:bg-red-500/20 transition-all text-red-400"
-                title={l.logout}
-              >
-                <LogOut size={20} />
-              </button>
-            </div>
-          ) : (
+          
+          <nav className="flex glass p-1.5 rounded-full shadow-2xl">
             <button
-              onClick={() => setView("chat")}
-              className="px-8 py-3 bg-gold text-mystic-900 font-bold rounded-2xl hover:scale-105 active:scale-95 transition-all shadow-[0_0_20px_rgba(212,175,55,0.2)] text-sm"
+              onClick={() => setView("horoscope")}
+              className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${
+                view === "horoscope" ? "bg-gold text-mystic-900 shadow-lg" : "text-white/40 hover:text-white hover:bg-white/5"
+              }`}
+            >
+              {l.general}
+            </button>
+            <button
+              onClick={() => setView(user ? (userProfile ? "chat" : "profile") : "chat")}
+              className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${
+                view === "chat" || view === "profile" ? "bg-gold text-mystic-900 shadow-lg" : "text-white/40 hover:text-white hover:bg-white/5"
+              }`}
             >
               {l.personalized}
             </button>
+          </nav>
+
+          {user && (
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setView("profile")}
+                className={`p-3 glass rounded-full transition-all ${view === 'profile' ? 'bg-gold text-mystic-900' : 'hover:bg-white/10 text-white/60'}`}
+                title={l.profile}
+              >
+                <UserIcon size={18} />
+              </button>
+              <button
+                onClick={handleLogout}
+                className="p-3 glass rounded-full hover:bg-red-500/20 transition-all text-red-400"
+                title={l.logout}
+              >
+                <LogOut size={18} />
+              </button>
+            </div>
           )}
         </div>
       </header>
 
-      {/* Navigation Tabs */}
-      <div className="max-w-7xl mx-auto w-full px-8 mb-12">
-        <div className="flex glass p-1.5 rounded-3xl w-fit shadow-xl">
-          <button
-            onClick={() => setView("horoscope")}
-            className={`px-8 py-3 rounded-2xl text-sm font-semibold tracking-wide transition-all flex items-center gap-3 ${
-              view === "horoscope" ? "bg-gold text-mystic-900 shadow-lg" : "text-white/40 hover:text-white hover:bg-white/5"
-            }`}
-          >
-            <Compass size={18} /> {l.general}
-          </button>
-          <button
-            onClick={() => setView(user ? (userProfile ? "chat" : "profile") : "chat")}
-            className={`px-8 py-3 rounded-2xl text-sm font-semibold tracking-wide transition-all flex items-center gap-3 ${
-              view === "chat" || view === "profile" ? "bg-gold text-mystic-900 shadow-lg" : "text-white/40 hover:text-white hover:bg-white/5"
-            }`}
-          >
-            <Sparkles size={18} /> {l.personalized}
-          </button>
-        </div>
-      </div>
-
-      <main className="flex-1 max-w-7xl mx-auto w-full px-6 py-4">
+      <main className="flex-1 max-w-[1600px] mx-auto w-full px-6 md:px-12 py-8">
         <AnimatePresence mode="wait">
           {view === "horoscope" && (
             <motion.div
               key="general-view"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="space-y-8"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.4 }}
+              className="space-y-16"
             >
               {!selectedSign ? (
-                <div className="space-y-8">
-                  <div className="text-center space-y-2">
-                    <h2 className="text-4xl font-serif gold-text">{l.selectSign}</h2>
-                    <div className="flex justify-center gap-2 opacity-40">
-                      <Star size={12} />
-                      <Star size={12} />
-                      <Star size={12} />
+                <div className="space-y-12">
+                  <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-white/10 pb-12">
+                    <div className="max-w-2xl">
+                      <span className="micro-label mb-4 block">Step 01</span>
+                      <h2 className="text-6xl md:text-8xl font-display leading-none uppercase tracking-tighter">
+                        {l.selectSign}
+                      </h2>
+                    </div>
+                    <div className="flex gap-2 opacity-20">
+                      <Star size={16} />
+                      <Star size={16} />
+                      <Star size={16} />
                     </div>
                   </div>
                   <ZodiacGrid
@@ -313,26 +308,28 @@ export default function App() {
                     onSelect={handleSignSelect}
                     selectedSign={selectedSign}
                   />
-                  <AdPlaceholder type="native" className="mt-12" />
+                  <AdPlaceholder type="native" className="mt-20" />
                 </div>
               ) : (
-                <div className="space-y-8">
-                  <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div className="space-y-12">
+                  <div className="flex flex-col md:flex-row items-center justify-between gap-8 border-b border-white/10 pb-12">
                     <button
                       onClick={() => setSelectedSign(null)}
-                      className="text-sm flex items-center gap-2 opacity-60 hover:opacity-100 transition-all"
+                      className="group flex items-center gap-4 text-xs font-bold uppercase tracking-[0.3em] opacity-40 hover:opacity-100 transition-all"
                     >
-                      <Compass size={16} />
+                      <div className="p-2 border border-white/20 rounded-full group-hover:bg-white group-hover:text-black transition-all">
+                        <Compass size={16} />
+                      </div>
                       {l.back}
                     </button>
 
-                    <div className="flex glass p-1 rounded-full">
+                    <div className="flex glass p-1.5 rounded-full shadow-2xl">
                       {(["daily", "weekly", "monthly"] as const).map((p) => (
                         <button
                           key={p}
                           onClick={() => setPeriod(p)}
-                          className={`px-6 py-2 rounded-full text-sm font-medium transition-all ${
-                            period === p ? "bg-gold text-mystic-900" : "opacity-60 hover:opacity-100"
+                          className={`px-8 py-2.5 rounded-full text-[10px] font-bold uppercase tracking-widest transition-all ${
+                            period === p ? "bg-gold text-mystic-900 shadow-lg" : "opacity-40 hover:opacity-100"
                           }`}
                         >
                           {l[p]}
@@ -340,20 +337,21 @@ export default function App() {
                       ))}
                     </div>
                   </div>
+                  
                   {(horoscope || loading || error) && (
-                    <div className="space-y-6">
+                    <div className="space-y-12">
                       {error && (
                         <motion.div 
                           initial={{ opacity: 0 }}
                           animate={{ opacity: 1 }}
-                          className="glass p-6 text-center text-red-400 border-red-500/20 max-w-2xl mx-auto"
+                          className="glass p-12 text-center text-red-400 border-red-500/20 max-w-3xl mx-auto"
                         >
-                          <p>{error}</p>
+                          <p className="text-xl font-serif italic mb-8">"{error}"</p>
                           <button 
                             onClick={() => selectedSign && handleSignSelect(selectedSign)}
-                            className="mt-4 px-6 py-2 bg-white/5 hover:bg-white/10 rounded-xl text-xs uppercase tracking-widest transition-all"
+                            className="px-12 py-4 bg-gold text-mystic-900 font-bold rounded-full uppercase tracking-widest text-xs transition-all hover:scale-105"
                           >
-                            Retry
+                            Consult the Stars Again
                           </button>
                         </motion.div>
                       )}
@@ -362,7 +360,7 @@ export default function App() {
                       )}
                     </div>
                   )}
-                  <AdPlaceholder type="banner" className="mt-8" />
+                  <AdPlaceholder type="banner" className="mt-12" />
                 </div>
               )}
             </motion.div>

@@ -16,22 +16,25 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
 }) => {
   if (loading) {
     return (
-      <div className="glass-dark p-12 w-full max-w-3xl mx-auto animate-pulse space-y-8 flex flex-col items-center">
-        <div className="p-4 bg-white/5 rounded-full mb-4">
-          <Moon size={32} className="text-white/20 animate-spin-slow" />
+      <div className="glass-dark p-12 md:p-24 w-full max-w-5xl mx-auto animate-pulse space-y-12 flex flex-col items-start">
+        <div className="flex justify-between w-full items-start">
+          <div className="space-y-4 w-1/2">
+            <div className="h-4 bg-white/5 rounded-full w-24"></div>
+            <div className="h-20 bg-white/5 rounded-2xl w-full"></div>
+          </div>
+          <div className="h-16 w-16 bg-white/5 rounded-full"></div>
         </div>
-        <p className="text-xs uppercase tracking-[0.3em] text-white/20 font-bold">Consulting the Stars...</p>
-        <div className="h-12 bg-white/5 rounded-2xl w-1/2"></div>
-        <div className="space-y-4 w-full">
+        
+        <div className="space-y-6 w-full">
           <div className="h-4 bg-white/5 rounded-full w-full"></div>
           <div className="h-4 bg-white/5 rounded-full w-full"></div>
           <div className="h-4 bg-white/5 rounded-full w-3/4"></div>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
-          <div className="h-16 bg-white/5 rounded-2xl"></div>
-          <div className="h-16 bg-white/5 rounded-2xl"></div>
-          <div className="h-16 bg-white/5 rounded-2xl"></div>
-          <div className="h-16 bg-white/5 rounded-2xl"></div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 w-full">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="h-24 bg-white/5 rounded-3xl"></div>
+          ))}
         </div>
       </div>
     );
@@ -44,6 +47,7 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
       compatibility: "Compatibility",
       mood: "Mood",
       prediction: "Celestial Guidance",
+      share: "Share Insight",
     },
     hi: {
       luckyNumber: "भाग्यशाली अंक",
@@ -51,6 +55,7 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
       compatibility: "अनुकूलता",
       mood: "मनोदशा",
       prediction: "दिव्य मार्गदर्शन",
+      share: "साझा करें",
     },
   };
 
@@ -78,76 +83,66 @@ export const HoroscopeCard: React.FC<HoroscopeCardProps> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 10 }}
+      initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
-      className="glass-dark p-10 md:p-14 w-full max-w-3xl mx-auto relative overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+      transition={{ duration: 0.6, ease: "easeOut" }}
+      className="glass-dark p-8 md:p-20 w-full max-w-5xl mx-auto relative overflow-hidden group"
     >
-      <div className="absolute top-6 right-6 z-20">
+      {/* Decorative elements */}
+      <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-gold/5 to-transparent pointer-events-none" />
+      <div className="absolute -top-24 -right-24 w-96 h-96 bg-gold/5 rounded-full blur-[120px] pointer-events-none" />
+
+      <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-20 relative z-10">
+        <div className="space-y-4">
+          <span className="micro-label text-gold">{data.date}</span>
+          <h2 className="text-7xl md:text-9xl font-display leading-none tracking-tighter gold-text">
+            {data.sign}
+          </h2>
+        </div>
+        
         <button 
           onClick={handleShare}
-          className="p-4 bg-gold text-mystic-900 hover:scale-110 active:scale-95 transition-all rounded-2xl shadow-lg flex items-center gap-2 font-bold text-sm"
-          title="Share Horoscope"
+          className="group/btn flex items-center gap-4 px-8 py-4 bg-white text-black font-bold uppercase tracking-widest text-xs rounded-full hover:bg-gold hover:text-mystic-900 transition-all duration-500 shadow-2xl"
         >
-          <Share2 size={18} />
-          <span className="hidden sm:inline">Share</span>
+          <Share2 size={16} />
+          {l.share}
         </button>
       </div>
-      <div className="absolute -top-24 -right-24 w-64 h-64 bg-gold/5 rounded-full blur-3xl" />
-      <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-accent/5 rounded-full blur-3xl" />
 
-      <div className="text-center mb-12 relative">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="inline-block p-4 bg-gold/10 rounded-full mb-6 border border-gold/20"
-        >
-          <Sparkles size={32} className="text-gold" />
-        </motion.div>
-        <h2 className="text-4xl md:text-5xl font-serif gold-text mb-4 tracking-tight">
-          {data.sign}
-        </h2>
-        <p className="text-xs text-white/40 uppercase tracking-[0.4em] font-medium">
-          {data.date}
-        </p>
-        <div className="mt-8 h-px bg-gradient-to-r from-transparent via-gold/30 to-transparent w-full"></div>
-      </div>
-
-      <div className="mb-14 relative">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-8 h-px bg-gold/50"></div>
-          <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-gold/80">
-            {l.prediction}
-          </h3>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 relative z-10">
+        <div className="lg:col-span-8 space-y-10">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-px bg-gold/40"></div>
+            <span className="micro-label">{l.prediction}</span>
+          </div>
+          <p className="text-3xl md:text-5xl font-serif italic leading-[1.15] text-white/90 selection:bg-gold selection:text-black">
+            "{data.prediction}"
+          </p>
         </div>
-        <p className="text-xl md:text-2xl leading-relaxed font-serif italic text-white/90">
-          "{data.prediction}"
-        </p>
+
+        <div className="lg:col-span-4 grid grid-cols-2 gap-px bg-white/10 border border-white/10 rounded-[2rem] overflow-hidden self-start">
+          {[
+            { icon: Hash, label: l.luckyNumber, value: data.luckyNumber },
+            { icon: Palette, label: l.luckyColor, value: data.luckyColor },
+            { icon: Heart, label: l.compatibility, value: data.compatibility },
+            { icon: Sparkles, label: l.mood, value: data.mood },
+          ].map((item, i) => (
+            <div 
+              key={i}
+              className="p-8 bg-mystic-950/40 flex flex-col items-start gap-4 group/item hover:bg-white/[0.03] transition-colors"
+            >
+              <item.icon size={18} className="text-gold opacity-40 group-hover/item:opacity-100 transition-opacity" />
+              <div>
+                <p className="text-[9px] opacity-30 uppercase tracking-[0.2em] mb-2 font-bold">{item.label}</p>
+                <p className="font-bold text-sm tracking-tight">{item.value}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-        {[
-          { icon: Hash, label: l.luckyNumber, value: data.luckyNumber },
-          { icon: Palette, label: l.luckyColor, value: data.luckyColor },
-          { icon: Heart, label: l.compatibility, value: data.compatibility },
-          { icon: Sparkles, label: l.mood, value: data.mood },
-        ].map((item, i) => (
-          <motion.div 
-            key={i}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.2 }}
-            className="p-5 glass border-white/5 flex flex-col items-center gap-3 text-center group hover:bg-white/5 transition-colors"
-          >
-            <item.icon size={20} className="text-gold opacity-60 group-hover:opacity-100 transition-opacity" />
-            <div>
-              <p className="text-[10px] opacity-40 uppercase tracking-widest mb-1">{item.label}</p>
-              <p className="font-bold text-sm tracking-wide">{item.value}</p>
-            </div>
-          </motion.div>
-        ))}
-      </div>
+      {/* Bottom accent */}
+      <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold/20 to-transparent" />
     </motion.div>
   );
 };

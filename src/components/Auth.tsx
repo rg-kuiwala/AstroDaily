@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { auth, googleProvider, signInWithPopup, signInWithRedirect } from "../firebase";
 import { Language } from "../types";
-import { LogIn, Sparkles, AlertCircle, Loader2, ArrowRight } from "lucide-react";
+import { LogIn, Sparkles, AlertCircle, Loader2, ArrowRight, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface AuthProps {
@@ -64,46 +64,53 @@ export const Auth: React.FC<AuthProps> = ({ language }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 40 }}
       animate={{ opacity: 1, y: 0 }}
-      className="glass p-12 max-w-md mx-auto text-center space-y-10 relative overflow-hidden"
+      transition={{ duration: 0.8, ease: "easeOut" }}
+      className="glass-dark p-12 md:p-24 max-w-4xl mx-auto text-center space-y-16 relative overflow-hidden"
     >
-      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-50" />
+      <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-gold to-transparent opacity-30" />
       
-      <div className="flex justify-center">
+      <div className="flex flex-col items-center gap-8">
         <motion.div 
-          animate={{ rotate: [0, 10, -10, 0] }}
-          transition={{ duration: 5, repeat: Infinity }}
-          className="p-5 bg-gold/10 rounded-3xl border border-gold/20 shadow-[0_0_40px_rgba(212,175,55,0.1)]"
+          animate={{ rotate: [0, 360] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="p-8 border border-gold/20 rounded-full shadow-[0_0_60px_rgba(242,125,38,0.1)] relative"
         >
-          <Sparkles size={56} className="text-gold" />
+          <div className="absolute inset-0 bg-gold/5 blur-3xl rounded-full" />
+          <Sparkles size={80} className="text-gold relative z-10" />
         </motion.div>
-      </div>
-      
-      <div className="space-y-3">
-        <h2 className="text-4xl font-serif font-bold gold-text leading-tight">{l.title}</h2>
-        <p className="text-sm text-white/50 leading-relaxed px-4">{l.subtitle}</p>
+        
+        <div className="space-y-6">
+          <span className="micro-label text-gold">Access the Infinite</span>
+          <h2 className="text-6xl md:text-8xl font-display leading-none uppercase tracking-tighter gold-text max-w-2xl mx-auto">
+            {l.title}
+          </h2>
+          <p className="text-xl font-serif italic text-white/50 leading-relaxed max-w-xl mx-auto">
+            "{l.subtitle}"
+          </p>
+        </div>
       </div>
 
-      <div className="space-y-6">
+      <div className="max-w-md mx-auto space-y-8">
         <button
           onClick={() => handleLogin(false)}
           disabled={loading}
-          className="w-full flex items-center justify-center gap-4 bg-white text-mystic-950 font-bold py-5 rounded-2xl hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:scale-100 shadow-[0_10px_30px_rgba(255,255,255,0.1)] group"
+          className="w-full flex items-center justify-center gap-6 bg-white text-mystic-950 font-bold py-6 rounded-full hover:bg-gold hover:text-mystic-900 transition-all duration-500 disabled:opacity-50 shadow-2xl group"
         >
           {loading ? (
-            <Loader2 size={22} className="animate-spin" />
+            <Loader2 size={24} className="animate-spin" />
           ) : (
-            <LogIn size={22} className="group-hover:translate-x-1 transition-transform" />
+            <LogIn size={24} className="group-hover:translate-x-2 transition-transform duration-500" />
           )}
-          <span className="text-lg">{l.button}</span>
+          <span className="text-lg uppercase tracking-widest">{l.button}</span>
         </button>
 
         {showRedirectOption && (
           <button
             onClick={() => handleLogin(true)}
             disabled={loading}
-            className="w-full flex items-center justify-center gap-2 text-white/40 hover:text-white text-xs font-medium py-2 transition-all uppercase tracking-widest"
+            className="w-full flex items-center justify-center gap-3 text-white/30 hover:text-white text-[10px] font-bold py-2 transition-all uppercase tracking-[0.3em]"
           >
             {language === "en" ? "Try Direct Method" : "सीधी विधि आज़माएं"}
             <ArrowRight size={14} />
@@ -113,21 +120,23 @@ export const Auth: React.FC<AuthProps> = ({ language }) => {
         <AnimatePresence>
           {error && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg flex items-start gap-3 text-left"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="p-6 bg-red-500/5 border border-red-500/20 rounded-3xl flex items-start gap-4 text-left"
             >
-              <AlertCircle size={16} className="text-red-500 shrink-0 mt-0.5" />
-              <p className="text-xs text-red-400 leading-tight">{error}</p>
+              <AlertCircle size={20} className="text-red-500 shrink-0 mt-1" />
+              <p className="text-sm text-red-400 font-medium leading-relaxed">{error}</p>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
       
-      <p className="text-[10px] opacity-40 uppercase tracking-widest">
-        Secure authentication via Google
-      </p>
+      <div className="flex justify-center gap-4 opacity-20">
+        <Star size={12} />
+        <Star size={12} />
+        <Star size={12} />
+      </div>
     </motion.div>
   );
 };
